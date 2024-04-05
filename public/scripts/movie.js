@@ -59,13 +59,15 @@ async function mostrar() {
   
   const director = dataMovie.credits.crew.find(person => person.job == 'Director')
   const img = document.createElement('img')
-  if (director.profile_path === null){
-    img.src = '../images/no-photo-actor.webp';
-    img.style.transform = 'scale(1.6)';
-  }else{
+  const img2 = document.createElement('img')
+  if (director.profile_path !== null){
     img.setAttribute('src', `https://image.tmdb.org/t/p/original/${director.profile_path}`)
+    dir_img.append(img)
+    img2.style.marginTop = '10px'
   }
-  dir_img.append(img)
+  img2.src = '../images/no-photo-actor.webp';
+  img2.style.transform = 'scale(1.6)';
+  dir_img.append(img2)
   dir_name.textContent = director.name
   if(dataMovie.credits.cast.length > 0){
      for(let i=0; i<6; i++){
@@ -313,8 +315,6 @@ document.addEventListener("click", (event) => {
     }, 500)
   }
 })
-
-console.log(dataMovie)
 }
 
 mostrar()
