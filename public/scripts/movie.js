@@ -1,6 +1,5 @@
 import "../src/toggleBtn.js"
 import "../src/extraBtn.js"
-import { loadData } from "../src/localStorage.js"
 let showedMovies = []
 let movieArrays = 
 {
@@ -11,8 +10,22 @@ let movieArrays =
 };
 
 
-({ movieArrays, showedMovies } = loadData(movieArrays, showedMovies));
+Object.entries(movieArrays).forEach(([key]) => {
+  movieArrays[key] = JSON.parse(localStorage.getItem(key)) || []
+})
+showedMovies = JSON.parse(localStorage.getItem('showedMovies')) || []
+
 const movieId = window.location.pathname.split('/').pop();
+
+window.addEventListener('beforeunload', () => {
+  let idInt = parseInt(movieId)
+  let allMovies = showedMovies.map(show => show.id)
+  const indexToRemove = allMovies.indexOf(idInt)
+  if (indexToRemove !== -1 && movieArrays && !Object.values(movieArrays).some(array => array.includes(movieId))) {
+    showedMovies.splice(indexToRemove, 1);
+    localStorage.setItem('showedMovies', JSON.stringify(showedMovies));
+  }
+})
 
 async function obtenerDatos() {
     try {
