@@ -1,92 +1,92 @@
-import { loadData, saveData } from "../src/localStorage.js"
-import { obtenerIdLogo } from "../src/providerbox.js"
-import "../src/buttonselect.js"
-import "../src/startButton.js"
-import "../src/filters.js"
-import "../src/infoButton.js"
-import "../src/toggleBtn.js"
-import "../src/extraBtn.js"
+import { loadData, saveData } from '../src/localStorage.js'
+import { obtenerIdLogo } from '../src/providerbox.js'
+import '../src/buttonselect.js'
+import '../src/startButton.js'
+import '../src/filters.js'
+import '../src/infoButton.js'
+import '../src/toggleBtn.js'
+import '../src/extraBtn.js'
 
 let i = 0
 let page = 1
 let previousUrl = null
 
 const poster = document.querySelector('.poster')
-export let movieArrays = 
+export let movieArrays =
 {
-  'likedMovies': [],
-  'dislikedMovies': [],
-  'watchlistMovies': [],
-  'uninterestedMovies': []
+  likedMovies: [],
+  dislikedMovies: [],
+  watchlistMovies: [],
+  uninterestedMovies: []
 }
 export let showedMovies = []
-let showedMoviesSession = []
-export let idArray = obtenerIdLogo()
+const showedMoviesSession = []
+export const idArray = obtenerIdLogo()
 let actualYearMin = 1885
 
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
+const currentDate = new Date()
+const currentYear = currentDate.getFullYear()
 let actualYearMax = currentYear
 
-export function getActualYearMin() {
+export function getActualYearMin () {
   return actualYearMin
 }
 
-export function setActualYearMin(newYear) {
+export function setActualYearMin (newYear) {
   actualYearMin = newYear
 }
 
-export function getActualYearMax() {
+export function getActualYearMax () {
   return actualYearMax
 }
 
-export function setActualYearMax(newMaxYear) {
+export function setActualYearMax (newMaxYear) {
   actualYearMax = newMaxYear
 }
 
-async function obtenerDatos() {
+async function obtenerDatos () {
   try {
     const idProviders = JSON.stringify(idArray)
     page = i < 20 ? page : ++page
     const url = `/api/movies?page=${page}&i=${i}&yearMin=${actualYearMin}&yearMax=${actualYearMax}&idProviders=${idProviders}`
     const changeConditionUrl = `page=${page}&idProviders=${idProviders}&yearMin=${actualYearMin}&yearMax=${actualYearMax}`
     if (changeConditionUrl !== previousUrl) {
-      previousUrl = changeConditionUrl;
+      previousUrl = changeConditionUrl
       i = 0
     }
-    const response = await fetch(url);
+    const response = await fetch(url)
     if (!response.ok) {
       throw new Error('Error al obtener los datos')
     }
-    return response.json();
+    return response.json()
   } catch (error) {
-    console.error('Hubo un error:', error);
+    console.error('Hubo un error:', error)
   }
 }
 
-({ movieArrays, showedMovies } = loadData(movieArrays, showedMovies));
+({ movieArrays, showedMovies } = loadData(movieArrays, showedMovies))
 
-export async function mostrarPelicula() {
-  try{
+export async function mostrarPelicula () {
+  try {
     let dataMovie = await obtenerDatos()
     let movie = dataMovie.results[i]
-    let allMovies = showedMovies.map(show => show.id)
-    
-    while(allMovies.includes(movie.id)){
+    const allMovies = showedMovies.map(show => show.id)
+
+    while (allMovies.includes(movie.id)) {
       i++
-      if(i>=dataMovie.results.length){
+      if (i >= dataMovie.results.length) {
         page++
-        i=0
-        dataMovie = await obtenerDatos() 
-      }  
-      movie = dataMovie.results[i] 
+        i = 0
+        dataMovie = await obtenerDatos()
+      }
+      movie = dataMovie.results[i]
     }
-    
+
     const article = document.createElement('article')
     poster.prepend(article)
     const div = document.createElement('div')
-    div.classList.add("generalInfo")
-    const yearMovie = movie.release_date.slice(0,4)
+    div.classList.add('generalInfo')
+    const yearMovie = movie.release_date.slice(0, 4)
     div.innerHTML = `
       <h2>${movie.title}</h2>
       <span>${yearMovie}</span>`
@@ -100,7 +100,7 @@ export async function mostrarPelicula() {
     showedMoviesSession.push(movie)
     showedMovies.push(movie)
     saveData(movieArrays, showedMovies)
-    } catch(error) {
+  } catch (error) {
     console.log('Hubo un error al obtener la película')
   }
 }
@@ -112,7 +112,7 @@ back.addEventListener('click', async () => {
   if (isProcessingClick) return
   isProcessingClick = true
   try {
-    let idShowedMoviesSession = showedMoviesSession.map(show => show.id)
+    const idShowedMoviesSession = showedMoviesSession.map(show => show.id)
     const returnMovies = showedMovies.slice(-3)
     const idReturnMovies = returnMovies.map(show => show.id)
 
@@ -127,7 +127,7 @@ back.addEventListener('click', async () => {
           movieArrays[key].splice(movieArrays[key].indexOf(id), 1)
         }
       })
-    });
+    })
     i = Math.max(0, i - 3)
     if (i <= 1 && page > 1) {
       i = 19
@@ -142,7 +142,3 @@ back.addEventListener('click', async () => {
     isProcessingClick = false
   }
 })
-
-
-
-

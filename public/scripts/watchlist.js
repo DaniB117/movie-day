@@ -1,10 +1,10 @@
-import { loadData } from "../src/localStorage.js"
-import "../src/toggleBtn.js"
-import "../src/extraBtn.js"
+import { loadData } from '../src/localStorage.js'
+import '../src/toggleBtn.js'
+import '../src/extraBtn.js'
 
 let startIndex = 0
 const imagesPerPage = 10
-let previousOption = ''
+const previousOption = ''
 
 const svgStar = `
 <svg viewBox="0 0 576 512" height="16" width="16" xmlns="http://www.w3.org/2000/svg" class="star-solid"fill="gold">
@@ -33,162 +33,159 @@ const svgInfo = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
 </svg>`
 
 let showedMovies = []
-let movieArrays = 
+let movieArrays =
 {
-  'likedMovies': [],
-  'dislikedMovies': [],
-  'watchlistMovies': [],
-  'uninterestedMovies': []
+  likedMovies: [],
+  dislikedMovies: [],
+  watchlistMovies: [],
+  uninterestedMovies: []
 }
 
-let movieArraysWithObjects = 
+const movieArraysWithObjects =
 {
-  'likedMovies': [],
-  'dislikedMovies': [],
-  'watchlistMovies': [],
-  'uninterestedMovies': []
+  likedMovies: [],
+  dislikedMovies: [],
+  watchlistMovies: [],
+  uninterestedMovies: []
 }
 const catalogueList = document.querySelector('.catalogueList')
 const moviesWatchlist = document.querySelector('.moviesWatchlist');
-//Recuperar los datos del localstorage
+// Recuperar los datos del localstorage
 ({ movieArrays, showedMovies } = loadData(movieArrays, showedMovies))
 
-//Separar los objetos en array de like/dislike/uninterested
+// Separar los objetos en array de like/dislike/uninterested
 Object.entries(movieArraysWithObjects).forEach(([key]) => {
-movieArraysWithObjects[key] = showedMovies.filter(objeto => movieArrays[key].includes(`${objeto.id}`))
+  movieArraysWithObjects[key] = showedMovies.filter(objeto => movieArrays[key].includes(`${objeto.id}`))
 })
 
-if (movieArrays['watchlistMovies'].length === 0){
+if (movieArrays.watchlistMovies.length === 0) {
   const span = document.createElement('span')
   span.classList.add('nomovies')
   span.textContent = 'No hay películas para mostrar.'
   catalogueList.append(span)
 }
 
-function moveToNewSection(id, targetArray) {
-    const index = movieArrays['watchlistMovies'].indexOf(`${id}`)
-    if (index !== -1) {
-        movieArrays['watchlistMovies'].splice(index, 1)
+function moveToNewSection (id, targetArray) {
+  const index = movieArrays.watchlistMovies.indexOf(`${id}`)
+  if (index !== -1) {
+    movieArrays.watchlistMovies.splice(index, 1)
 
-      if (movieArrays['watchlistMovies'].length === 0){
-        const span = document.createElement('span')
-        span.classList.add('nomovies')
-        span.textContent = 'No hay películas para mostrar.'
-        catalogueList.append(span)
-      }
-
-      targetArray.push(`${id}`)
-      Object.entries(movieArrays).forEach(([key, value]) => {
-        localStorage.setItem(key, JSON.stringify(value))
-      })
-    }
-
-}
-  
-
-function mostrar(arrayWithObjects) {
-    
-    Object.entries(movieArrays).forEach(([key]) => {
-      movieArrays[key] = JSON.parse(localStorage.getItem(key)) || []
-    })
-  
-    const loadMoreButton = document.querySelector('.carga')
-    if (loadMoreButton) {
-      loadMoreButton.remove()
-    }
-
-    const movies = arrayWithObjects.slice(startIndex, startIndex + imagesPerPage)
-   
-    movies.forEach(movie => {
-        const div = document.createElement('div')
-        div.classList.add('cont')
-        const img = document.createElement('img')
-        img.setAttribute('src', `https://image.tmdb.org/t/p/original${movie.poster_path}`)
-        const data = document.createElement('div')
-        data.classList.add('data')
-        const top = document.createElement('div')
-        top.classList.add('top')
-        const description = document.createElement('span')
-        description.classList.add('description')
-        description.textContent = `${movie.overview}`
-        const bot = document.createElement('div')
-        bot.classList.add('bot')
-        
-        //TOP
-        const titleMovie = document.createElement('div')
-        titleMovie.classList.add('titleMovie')
-        const titulo = document.createElement('span')
-        titulo.textContent = `${movie.title}`
-        titleMovie.append(titulo)   
-        const calif = document.createElement('div')
-        calif.classList.add('calif')
-        let vote = movie.vote_average.toFixed(1)
-        const stars = document.createElement('span')
-        calif.innerHTML= svgStar
-        stars.textContent = `${vote}`
-        calif.prepend(stars)
-        
-        titleMovie.append(titulo)
-        top.append(titleMovie,calif)
-
-        //BOT
-        const botones = document.createElement('div')
-        botones.classList.add('botones')
-        const likeButton = document.createElement('div')
-        likeButton.classList.add('iconButton')
-        likeButton.innerHTML = svgLike
-        const dislikeButton = document.createElement('div')
-        dislikeButton.classList.add('iconButton')
-        dislikeButton.innerHTML = svgDislike
-        const uninterestedButton = document.createElement('div')
-        uninterestedButton.classList.add('iconButton')
-        uninterestedButton.innerHTML = svgUninterested
-        botones.append(likeButton, dislikeButton, uninterestedButton)
-
-        const info = document.createElement('div')
-        info.classList.add('info')
-        const infoButton = document.createElement('div')
-        infoButton.classList.add('iconButton')
-        infoButton.innerHTML = svgInfo
-        info.append(infoButton)
-
-        bot.append(botones, info)
-
-        likeButton.addEventListener('click', () =>{
-            div.remove()
-            moveToNewSection(movie.id, movieArrays['likedMovies'])
-        })
-
-        dislikeButton.addEventListener('click', () =>{
-          div.remove()
-          moveToNewSection(movie.id, movieArrays['dislikedMovies'])
-        })
-
-        uninterestedButton.addEventListener('click', () =>{
-          div.remove()
-          moveToNewSection(movie.id, movieArrays['uninterestedMovies'])
-        })
-        
-        infoButton.addEventListener('click', () => {
-          window.location.href = '/movie/' + movie.id
-        })
-        
-        data.append(top, description, bot)
-        div.append(img, data)
-        moviesWatchlist.append(div) 
-    })
-    if(arrayWithObjects.length > startIndex + imagesPerPage){
-      const loadMoreButton = document.createElement('div')
-      loadMoreButton.classList.add('carga')
+    if (movieArrays.watchlistMovies.length === 0) {
       const span = document.createElement('span')
-      span.textContent = '+';
-      loadMoreButton.append(span)
-      loadMoreButton.addEventListener('click', () => {
-        startIndex += imagesPerPage
-        loadMoreButton.remove()
-        mostrar(arrayWithObjects)
-      })
-      catalogueList.append(loadMoreButton)
+      span.classList.add('nomovies')
+      span.textContent = 'No hay películas para mostrar.'
+      catalogueList.append(span)
     }
+
+    targetArray.push(`${id}`)
+    Object.entries(movieArrays).forEach(([key, value]) => {
+      localStorage.setItem(key, JSON.stringify(value))
+    })
   }
-mostrar(movieArraysWithObjects['watchlistMovies'])
+}
+
+function mostrar (arrayWithObjects) {
+  Object.entries(movieArrays).forEach(([key]) => {
+    movieArrays[key] = JSON.parse(localStorage.getItem(key)) || []
+  })
+
+  const loadMoreButton = document.querySelector('.carga')
+  if (loadMoreButton) {
+    loadMoreButton.remove()
+  }
+
+  const movies = arrayWithObjects.slice(startIndex, startIndex + imagesPerPage)
+
+  movies.forEach(movie => {
+    const div = document.createElement('div')
+    div.classList.add('cont')
+    const img = document.createElement('img')
+    img.setAttribute('src', `https://image.tmdb.org/t/p/original${movie.poster_path}`)
+    const data = document.createElement('div')
+    data.classList.add('data')
+    const top = document.createElement('div')
+    top.classList.add('top')
+    const description = document.createElement('span')
+    description.classList.add('description')
+    description.textContent = `${movie.overview}`
+    const bot = document.createElement('div')
+    bot.classList.add('bot')
+
+    // TOP
+    const titleMovie = document.createElement('div')
+    titleMovie.classList.add('titleMovie')
+    const titulo = document.createElement('span')
+    titulo.textContent = `${movie.title}`
+    titleMovie.append(titulo)
+    const calif = document.createElement('div')
+    calif.classList.add('calif')
+    const vote = movie.vote_average.toFixed(1)
+    const stars = document.createElement('span')
+    calif.innerHTML = svgStar
+    stars.textContent = `${vote}`
+    calif.prepend(stars)
+
+    titleMovie.append(titulo)
+    top.append(titleMovie, calif)
+
+    // BOT
+    const botones = document.createElement('div')
+    botones.classList.add('botones')
+    const likeButton = document.createElement('div')
+    likeButton.classList.add('iconButton')
+    likeButton.innerHTML = svgLike
+    const dislikeButton = document.createElement('div')
+    dislikeButton.classList.add('iconButton')
+    dislikeButton.innerHTML = svgDislike
+    const uninterestedButton = document.createElement('div')
+    uninterestedButton.classList.add('iconButton')
+    uninterestedButton.innerHTML = svgUninterested
+    botones.append(likeButton, dislikeButton, uninterestedButton)
+
+    const info = document.createElement('div')
+    info.classList.add('info')
+    const infoButton = document.createElement('div')
+    infoButton.classList.add('iconButton')
+    infoButton.innerHTML = svgInfo
+    info.append(infoButton)
+
+    bot.append(botones, info)
+
+    likeButton.addEventListener('click', () => {
+      div.remove()
+      moveToNewSection(movie.id, movieArrays.likedMovies)
+    })
+
+    dislikeButton.addEventListener('click', () => {
+      div.remove()
+      moveToNewSection(movie.id, movieArrays.dislikedMovies)
+    })
+
+    uninterestedButton.addEventListener('click', () => {
+      div.remove()
+      moveToNewSection(movie.id, movieArrays.uninterestedMovies)
+    })
+
+    infoButton.addEventListener('click', () => {
+      window.location.href = '/movie/' + movie.id
+    })
+
+    data.append(top, description, bot)
+    div.append(img, data)
+    moviesWatchlist.append(div)
+  })
+  if (arrayWithObjects.length > startIndex + imagesPerPage) {
+    const loadMoreButton = document.createElement('div')
+    loadMoreButton.classList.add('carga')
+    const span = document.createElement('span')
+    span.textContent = '+'
+    loadMoreButton.append(span)
+    loadMoreButton.addEventListener('click', () => {
+      startIndex += imagesPerPage
+      loadMoreButton.remove()
+      mostrar(arrayWithObjects)
+    })
+    catalogueList.append(loadMoreButton)
+  }
+}
+mostrar(movieArraysWithObjects.watchlistMovies)

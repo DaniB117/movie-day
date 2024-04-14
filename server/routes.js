@@ -5,7 +5,7 @@ export const moviesRouter = Router()
 
 moviesRouter.get('/api/providers', MovieController.getProviders)
 moviesRouter.get('/api/movies', MovieController.getMovies)
-moviesRouter.get('/api/movie/:id', MovieController.getMovieById )
+moviesRouter.get('/api/movie/:id', MovieController.getMovieById)
 
 moviesRouter.get('/', MovieController.index)
 moviesRouter.get('/watchlist', MovieController.watchlist)

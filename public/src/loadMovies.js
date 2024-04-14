@@ -10,43 +10,41 @@ const svgCode = `
   <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
 </svg>`
 
-let movieArrays = 
+const movieArrays =
 {
-  'likedMovies': [],
-  'dislikedMovies': [],
-  'watchlistMovies': [],
-  'uninterestedMovies': []
+  likedMovies: [],
+  dislikedMovies: [],
+  watchlistMovies: [],
+  uninterestedMovies: []
 }
 
-
-function eliminarIdDeArrays(id) {
+function eliminarIdDeArrays (id) {
   for (const key in movieArrays) {
     const array = movieArrays[key]
     const index = array.indexOf(`${id}`)
     if (index !== -1) {
       array.splice(index, 1)
-      if (array.length === 0){
+      if (array.length === 0) {
         const span = document.createElement('span')
         span.classList.add('nomovies')
         span.textContent = 'No hay películas para mostrar.'
         catalogueList.append(span)
       }
-      return true  
+      return true
     }
   }
   return false
 }
 
-
-//Funcion para mostrar 10 peliculas y poner boton de mostrar mas.
-export function mostrar(arrayWithObjects) {
+// Funcion para mostrar 10 peliculas y poner boton de mostrar mas.
+export function mostrar (arrayWithObjects) {
   Object.entries(movieArrays).forEach(([key]) => {
     movieArrays[key] = JSON.parse(localStorage.getItem(key)) || []
   })
 
-  if (previousOption !== JSON.stringify(arrayWithObjects)){
-      startIndex = 0
-      previousOption = JSON.stringify(arrayWithObjects)
+  if (previousOption !== JSON.stringify(arrayWithObjects)) {
+    startIndex = 0
+    previousOption = JSON.stringify(arrayWithObjects)
   }
   const loadMoreButton = document.querySelector('.carga')
   if (loadMoreButton) {
@@ -56,13 +54,13 @@ export function mostrar(arrayWithObjects) {
   movies.forEach(movie => {
     const div = document.createElement('div')
     div.classList.add('cont')
-    const img = document.createElement('img');
+    const img = document.createElement('img')
     img.setAttribute('src', `https://image.tmdb.org/t/p/original${movie.poster_path}`)
     const overlay = document.createElement('div')
     overlay.classList.add('overlay')
     const deleteButton = document.createElement('div')
     deleteButton.classList.add('deleteButton')
-    deleteButton.innerHTML= svgCode
+    deleteButton.innerHTML = svgCode
     deleteButton.addEventListener('click', (event) => {
       console.log(movie.id)
       div.remove()
@@ -73,13 +71,13 @@ export function mostrar(arrayWithObjects) {
     })
     overlay.append(deleteButton)
     div.append(img, overlay)
-    moviesCatalogue.append(div) 
+    moviesCatalogue.append(div)
   })
-  if(arrayWithObjects.length > startIndex + imagesPerPage){
+  if (arrayWithObjects.length > startIndex + imagesPerPage) {
     const loadMoreButton = document.createElement('div')
     loadMoreButton.classList.add('carga')
     const mas = document.createElement('span')
-    mas.textContent = '+';
+    mas.textContent = '+'
     loadMoreButton.append(mas)
     loadMoreButton.addEventListener('click', () => {
       startIndex += imagesPerPage
@@ -89,4 +87,3 @@ export function mostrar(arrayWithObjects) {
     catalogueList.append(loadMoreButton)
   }
 }
-  
