@@ -183,12 +183,11 @@ span{
 .cont{
     width: 100%;
     height: auto;
-
     display: flex;
     align-items: center;
-    padding: 18px 5px;
+    justify-content: center;
+    padding: 18px 0;
     gap: 12px;
-    
     border-bottom: 2px solid #ffffff;
 }
 .title{
@@ -203,6 +202,7 @@ span{
     }
 }
 .top{
+    width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -220,29 +220,31 @@ span{
     width: calc(100% - 60px);
     display: flex;
     align-items: center;
-    & span {  
+    & span {
+        width: 100%;   
         font-size: 20px;
         text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap; 
-        display: inline-block; 
-        width: 100%; 
-    }
-}
-
-
-
-.description {
-        width: 100%;
-        font-size: 16px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        overflow: hidden; 
         display: -webkit-box;
         display: -moz-box;
         -webkit-box-orient: vertical;
         -moz-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        -moz-line-clamp: 3; 
+        -webkit-line-clamp: 1;
+        -moz-line-clamp: 1; 
+    }
+}
+
+.description {
+    width: 100%;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    display: -moz-box;
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    -moz-line-clamp: 3; 
 }
 
 .moviesWatchlist .cont img{
