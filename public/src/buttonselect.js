@@ -20,6 +20,7 @@ liked.addEventListener('click', async () => {
   try {
     liked.disabled = true
     const movieId = poster.lastChild.getAttribute('data-id')
+    if (movieId === '0') return
     movieArrays.likedMovies.push(movieId)
     await removePoster()
   } catch {

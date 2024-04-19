@@ -62,7 +62,6 @@ export function mostrar (arrayWithObjects) {
     deleteButton.classList.add('deleteButton')
     deleteButton.innerHTML = svgCode
     deleteButton.addEventListener('click', (event) => {
-      console.log(movie.id)
       div.remove()
       eliminarIdDeArrays(movie.id)
       Object.entries(movieArrays).forEach(([key, value]) => {

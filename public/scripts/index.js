@@ -10,7 +10,7 @@ import '../src/extraBtn.js'
 let i = 0
 let page = 1
 let previousUrl = null
-
+let noMoviesChildren = 0
 const poster = document.querySelector('.poster')
 export let movieArrays =
 {
@@ -20,7 +20,7 @@ export let movieArrays =
   uninterestedMovies: []
 }
 export let showedMovies = []
-const showedMoviesSession = []
+export const showedMoviesSession = []
 export const idArray = obtenerIdLogo()
 let actualYearMin = 1885
 
@@ -99,9 +99,29 @@ export async function mostrarPelicula () {
     i++
     showedMoviesSession.push(movie)
     showedMovies.push(movie)
+    noMoviesChildren = 0
     saveData(movieArrays, showedMovies)
-  } catch (error) {
-    console.log('Hubo un error al obtener la película')
+  } catch {
+    const posterChildren = poster.children
+    
+    for (let child of posterChildren) {
+      if (child.classList.contains('no-movies')){
+        noMoviesChildren++
+      }
+    }
+    console.log(noMoviesChildren)
+    if (noMoviesChildren >= 2) return
+    const article = document.createElement('article')
+    article.setAttribute('data-id', 0)
+    article.classList.add('no-movies')
+    poster.prepend(article)
+    const div = document.createElement('div')
+    div.textContent = 'No hay películas para mostrar.'
+    article.append(div)
+    const movie = {id: 0}
+    showedMoviesSession.push(movie)
+    showedMovies.push(movie)
+    saveData(movieArrays, showedMovies)
   }
 }
 

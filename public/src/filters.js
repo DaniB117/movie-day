@@ -1,4 +1,4 @@
-import { showedMovies, mostrarPelicula, idArray, getActualYearMax, setActualYearMax, getActualYearMin, setActualYearMin } from '../scripts/index.js'
+import { showedMovies, mostrarPelicula, idArray, getActualYearMax, setActualYearMax, getActualYearMin, setActualYearMin, showedMoviesSession } from '../scripts/index.js'
 
 const currentDate = new Date()
 const currentYear = currentDate.getFullYear()
@@ -122,7 +122,6 @@ inputElement[0].onblur = function () {
   } else if (whoChange) {
     whoChange = false
   }
-  // console.log(previousYearMin, this.value, whoChange)
 }
 
 inputElement[1].addEventListener('keydown', function (event) {
@@ -215,7 +214,7 @@ apply.addEventListener('click', async () => {
   year.classList.remove('active')
 
   showedMovies.pop()
-
+  showedMoviesSession.splice(0)
   poster.lastChild.remove()
   poster.lastChild.remove()
 
