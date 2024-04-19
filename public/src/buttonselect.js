@@ -33,6 +33,7 @@ disliked.addEventListener('click', async () => {
   try {
     disliked.disabled = true
     const movieId = poster.lastChild.getAttribute('data-id')
+    if (movieId === '0') return
     movieArrays.dislikedMovies.push(movieId)
     await removePoster()
   } catch {
@@ -46,6 +47,7 @@ watchlist.addEventListener('click', async () => {
   try {
     watchlist.disabled = true
     const movieId = poster.lastChild.getAttribute('data-id')
+    if (movieId === '0') return
     movieArrays.watchlistMovies.push(movieId)
     await removePoster()
   } catch {
@@ -59,6 +61,7 @@ uninterested.addEventListener('click', async () => {
   try {
     uninterested.disabled = true
     const movieId = poster.lastChild.getAttribute('data-id')
+    if (movieId === '0') return
     movieArrays.uninterestedMovies.push(movieId)
     await removePoster()
   } catch {
